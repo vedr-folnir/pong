@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friend list</title>
+</head>
+<body>
+    {% for elem in friends %}
+        {% if elem.user.username == you.username %}
+            <p>{{elem.friend.username}}
+        {% else %}
+            <p>{{elem.user.username}}
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
