@@ -9,8 +9,6 @@
         <p>{{elem.user.username}}
         | 
         <a href= "{% url 'friend:accept' elem.id %}">accept</a>
-        / 
-        <a href= "{% url 'friend:refuse' elem.id %}">refuse</a></p>
     {% endfor %}
 </body>
 </html>

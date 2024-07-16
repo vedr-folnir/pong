@@ -10,6 +10,7 @@
         {% else %}
             <p>{{elem.user.username}}
         {% endif %}
+        | <a href= "{% url 'friend:del' elem.id %}">delete</a></p>
     {% endfor %}
 </body>
 </html>

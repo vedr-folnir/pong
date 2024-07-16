@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from .models import Friendship
 from django.contrib import messages
@@ -26,21 +26,23 @@ def add(request):
         # For example, you can query the User model or process it in other ways
     return render(request, "friend/add.html")
     
-def delete(request):
-    return render(request, "friend/hello.html")
+def delete_friend(request, id_friendship):
+    request = Friendship.objects.get(id=id_friendship)
+    request.delete()
+    return redirect("friend:list")
 
+def accept(request, id_friendship):
+    request = Friendship.objects.get(id=id_friendship)
 
-def accept(request, id):
-    request = Friendship.objects.get(id=id)
     request.status = 'accepted'
     request.save()
-    return render(request, "friend/pending.html")
+    return redirect("friend:pending")
 
-def refuse(request, id):
-    request = Friendship.objects.get(id=id)
+def refuse(request, id_friendship):
+    request = Friendship.objects.get(id=id_friendship)
     request.status = 'refused'
     request.save()
-    return render(request, "friend/pending.html")
+    return redirect("friend:pending")
 
 def list(request):
     you = request.user
@@ -52,3 +54,8 @@ def pending(request):
     you = request.user
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
     return render(request, "friend/pending.html", {'friends':friends, 'you':you})
+
+def refused(request):
+    you = request.user
+    friends = Friendship.objects.filter(Q(friend=you, status='refused'))
+    return render(request, "friend/refused.html", {'friends':friends, 'you':you})
