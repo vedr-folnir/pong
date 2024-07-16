@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import Friendship
 from django.contrib import messages
 from django.db.models import Q
+from django.utils import timezone
 # Create your views here.
 
 def index(request):
@@ -11,6 +12,8 @@ def index(request):
 def add(request):
     if request.method == 'POST':
         you = request.user
+        you.last_login = timezone.now()
+        you.save()
         users = User.objects.filter(username=request.POST.get('username'))
         if len(users) == 0:
             messages.info(request, ("user doesn't exist"))
@@ -47,15 +50,21 @@ def refuse(request, id_friendship):
 def list(request):
     you = request.user
     friends = Friendship.objects.filter(Q(user=you, status='accepted') | Q(friend=you, status='accepted'))
+    you.last_login = timezone.now()
+    you.save()
     return render(request, "friend/list.html", {'friends':friends, 'you':you})
 
 
 def pending(request):
     you = request.user
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
+    you.last_login = timezone.now()
+    you.save()
     return render(request, "friend/pending.html", {'friends':friends, 'you':you})
 
 def refused(request):
     you = request.user
     friends = Friendship.objects.filter(Q(friend=you, status='refused'))
+    you.last_login = timezone.now()
+    you.save()
     return render(request, "friend/refused.html", {'friends':friends, 'you':you})
